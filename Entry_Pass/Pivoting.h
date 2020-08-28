@@ -55,20 +55,32 @@ private:
       size_t pivot = _partition(elems, lo, hi);
 
       _do_qsort(elems, lo, pivot);
-      _do_qsort(elems, pivot+1, hi);
+      _do_qsort(elems, pivot + 1, hi);
    }
 
    static T _find_kth_least_elem(vector<T>& elems, size_t lo, size_t hi, size_t k) {
-      do_qsort(elems);
-      return elems[k];
+
+      if (lo == hi) {
+         return elems[lo];
+      }
+
+      size_t pivot = _partition(elems, lo, hi);
+
+      if (k <= pivot) {
+         _find_kth_least_elem(elems, lo, pivot, k);
+      }
+      else if (k >= pivot) {
+         _find_kth_least_elem(elems, pivot + 1, hi, k);
+      }
    }
 
 public:
    static T find_median(vector<T>& elems) {
       size_t total_size = elems.size();
       size_t elems_median_index = total_size / 2;
-      do_qsort(elems);
-      return elems[elems_median_index];
+      
+      return _find_kth_least_elem(elems, 0, total_size - 1, elems_median_index);
+
    }
 
    static T find_kth_least_elem(vector<T>& elems, size_t k) {
